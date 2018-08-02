@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!--첫줄에 와야된다. -->
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--
+	xml은 반드시 하나의 루트 태크를 가져야 한다.
+<configuration>   X
+</configuration>  안된다..
+-->
+<configuration> 
+	<!-- 설정파일에서 사용할 프로퍼티의 파일의 경로 지정: classpath 
+		source folder(resources) 명은 제외
+		config/mybatis/db.properties
+		db.properties 파일을 읽어 xml에 적용
+	-->
+	<properties resource = "config/mybatis/db.properties"/> <!-- property 또는 속성 attribute -->
+	
+	<!-- SQL의 결과를 담을 VO 객체들의 별칭을 설정하여 사용의 편의를 도모  
+		mapper xml 파일에서 설정된 alias를 사용할 수 있다
+		kr\co\mlec\member\domain\Member.java
+		1428213      
+	-->
+	<typeAliases>
+		<typeAlias alias="page" type="kr.co.bitnews.domain.Page" />
+		<typeAlias alias="user" type="kr.co.bitnews.domain.User" />
+		<typeAlias alias="article" type="kr.co.bitnews.domain.Article" />
+		<typeAlias alias="news" type="kr.co.bitnews.domain.News" />
+		<typeAlias alias="newsimg" type="kr.co.bitnews.domain.NewsImg" />
+		<typeAlias alias="scrap" type="kr.co.bitnews.domain.Scrap" />
+		<typeAlias alias="board" type="kr.co.bitnews.domain.Board" />		
+		<typeAlias alias="comment" type="kr.co.bitnews.domain.Comment" />		
+		<typeAlias alias="boardFile" type="kr.co.bitnews.domain.BoardFile" />		
+		<typeAlias alias="myScrap" type="kr.co.bitnews.domain.MyScrap" />		
+		<typeAlias alias="myComment" type="kr.co.bitnews.domain.MyComment" />		
+	</typeAliases>
+	
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC"/>
+			<dataSource type="POOLED"> <!-- db연결정보를 표시하는 태그  (POOLED = ConnectionPool 방식으로 ) -->
+				<property name="driver" value="${driver}"/>
+				<property name="url" value="${url}"/>
+				<property name="username" value="${username}"/>
+				<property name="password" value="${password}"/>
+			</dataSource>
+		</environment>
+	</environments>
+
+	<!-- 
+		개별적으로 작성한 mapper.xml(SQL)의 위치를 알려준다.
+	 -->
+	<mappers>
+		<mapper resource="config/sqlmap/oracle/user.xml"/>
+		<mapper resource="config/sqlmap/oracle/article.xml"/>
+		<mapper resource="config/sqlmap/oracle/news.xml"/>
+		<mapper resource="config/sqlmap/oracle/scrap.xml"/>	
+		<mapper resource="config/sqlmap/oracle/freeboard.xml"/>	
+		<mapper resource="config/sqlmap/oracle/articleboard.xml"/>	
+		<mapper resource="config/sqlmap/oracle/usedboard.xml"/>	
+		<mapper resource="config/sqlmap/oracle/myscrap.xml"/>	
+	</mappers>
+</configuration>

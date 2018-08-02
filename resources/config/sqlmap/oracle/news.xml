@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "kr.co.bitnews.mapper.NewsMapper">
+
+	<resultMap id="newsMap" type="news">
+		<result column="news_seq" property="newsSeq"/>
+		<result column="news_id" property="newsId"/>
+		<result column="user_id" property="userId"/>
+	</resultMap>
+	
+	<resultMap id="newsimgMap" type="newsimg">
+		<result column="day" property="day"/>
+		<result column="news_id" property="newsId"/>
+		<result column="img_path" property="imgPath"/>
+	</resultMap>
+
+	<insert id="insertNews" parameterType="news">
+		insert into tb_news(
+			news_seq,
+			news_id,
+			user_id
+		)values(
+			s_tb_news_seq.nextval,
+			#{newsId},
+			#{userId}
+		)
+	</insert>
+	
+	<delete id="deleteNewsById" parameterType="string">
+		delete tb_news
+		 where user_id = #{userId}
+	</delete>
+	
+	<select id="selectNewsByUser" parameterType="string" resultType="string">
+		select news_id
+		  from tb_news
+		 where user_id = #{userId}
+	</select>
+	
+	<!-- news_img db작업 -->
+	<insert id="insertNewsImg" parameterType="newsimg">
+		insert into tb_news_img(
+			day,
+			news_id,
+			img_path
+		)values(
+			#{day},
+			#{newsId},
+			#{imgPath}
+		)
+	</insert>
+		
+	<select id="selectNewsImgByid" parameterType="string" resultMap="newsimgMap">
+		select *
+		  from (
+			  select *
+			    from tb_news_img
+			   where news_id = #{newsId}
+			   order by day desc
+			  )
+		 where rownum = 1
+	</select>
+	
+	<select id="selectNewsImg" resultMap="newsimgMap">
+		select * 
+		  from (
+			   select *
+			     from tb_news_img
+			    order by day desc
+		   )   
+		  where rownum <![CDATA[ < ]]> 12
+	</select>
+	
+	<select id="selectnewsImgByDay" parameterType="string" resultType="string">
+		select day
+		  from tb_news_img
+		 where news_id = #{newsId}
+		 order by day
+	</select>
+	
+	
+	<select id="selectAfterNews" parameterType="newsimg" resultMap="newsimgMap">
+		select *
+		  from tb_news_img
+		 where day = #{day} and news_id = #{newsId}
+	</select>
+	
+</mapper>

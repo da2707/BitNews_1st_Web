@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "kr.co.bitnews.mapper.ScrapMapper">
+
+	<resultMap id="scrapMap" type="scrap" >
+		<result column="scrap_no" property="scrapNo"/>
+		<result column="article_no" property="articleNo"/>
+		<result column="user_id" property="userId"/>
+	</resultMap>
+
+	<insert id="insertScrap" parameterType="scrap" >
+		insert into tb_scrap(
+			scrap_no,
+			article_no,
+			user_id
+		)values(
+			s_tb_scrap_seq.nextval,
+			#{articleNo},
+			#{userId}
+		)
+	</insert>
+	
+	<select id="selectScrapById" resultMap="scrapMap" parameterType="string">
+		select *
+		  from tb_scrap
+		 where user_id = #{userId}
+	</select>
+	
+	<delete id="deleteScrap" parameterType="scrap">
+	    delete from tb_scrap
+	    where user_id = #{userId} and
+	         scrap_no = #{scrapNo}	          	
+	</delete>
+	
+	
+</mapper>

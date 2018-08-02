@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+<script type="text/javascript">
+	function  html2img(){
+	  var canvas ="";
+	  html2canvas($("#SavePart"), {
+	  onrendered: function(canvas) {
+	  // canvas is the final rendered <canvas> element
+	   document.getElementById("theimage").src = canvas.toDataURL();
+	     Canvas2Image.saveAsPNG(canvas);
+	  }
+	  });
+	  //alert(document.getElementById("SavePart").innerHTML);
+	}
+
+</script>
+</body>
+</html>

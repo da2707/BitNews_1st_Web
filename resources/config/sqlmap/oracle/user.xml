@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "kr.co.bitnews.mapper.UserMapper">
+
+	<resultMap id="usermap" type="user">
+		<result column="user_id" property="userId"/>
+		<result column="user_pw" property="userPw"/>
+		<result column="user_name" property="userName"/>
+		<result column="user_email" property="userEmail"/>
+		<result column="user_withdraw" property="userWithdraw"/>
+	</resultMap>
+	
+
+	<select id = "selectUserById" resultMap="usermap" parameterType="string">
+		select *
+		  from tb_user
+		 where user_id = #{userId}
+	</select>
+	
+	<select id = "selectAcc" resultMap="usermap" parameterType="string">
+		select *
+		  from tb_user
+		 where user_email = #{userEmail}
+	</select>
+	
+	<insert id="insertUser" parameterType="user">
+		insert into tb_user(
+			user_id,
+			user_pw,
+			user_name,
+			user_email
+		)values (
+			#{userId},
+			#{userPw},
+			#{userName},
+			#{userEmail}
+		)
+	</insert>
+	
+	<update id="updateUser" parameterType="user">
+		update tb_user
+		   set user_pw = #{userPw},
+		   	   user_name = #{userName},
+		   	   user_email = #{userEmail}
+		 where user_id = #{userId}
+	</update>
+	
+	<update id="updatePass" parameterType="user">
+	    update tb_user
+	       set user_pw = #{userPw}
+	     where user_id = #{userId}
+	</update>
+	
+	<update id="withdrawUser" parameterType="string">
+		update tb_user
+		   set user_withdraw = 1
+		 where user_id = #{id}
+	</update>
+	
+	<select id="selectMemberCount" parameterType="string" resultType="int">
+		select count(*)
+		  from tb_user
+		 where user_id = #{userId} 
+	</select>
+	
+	
+</mapper>
+

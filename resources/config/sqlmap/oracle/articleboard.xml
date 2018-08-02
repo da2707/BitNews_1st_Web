@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "kr.co.bitnews.mapper.ArticleBoardMapper">
+
+		<resultMap id="boardMap" type="board">
+		<result column="no" property="no"/>
+		<result column="title" property="title"/>
+		<result column="user_id" property="userId"/>
+		<result column="content" property="content"/>
+		<result column="reg_date" property="regDate"/>
+		<result column="view_cnt" property="viewCnt"/>
+		<result column="cmtCount" property="cmtCount" />
+	</resultMap>
+	
+	<select id="selectById" resultMap = "boardMap" parameterType="string">
+	    select *
+	      from tb_articleboard
+	     where user_id = #{userId}
+	</select>
+
+	<select id="selectBoardByNo" parameterType="int" resultMap = "boardMap">
+		select *
+		  from tb_articleboard
+		 where no = #{no}
+	</select>
+	
+	<insert id="insertBoard" parameterType="board">
+	    <selectKey keyProperty="no" resultType="int" order="BEFORE">
+    		select s_articleboard_no.nextval from dual
+    	</selectKey>
+		insert into tb_articleboard(
+			no,
+			title,
+			user_id,
+			content
+		)values (
+			#{no},
+			#{title},
+			#{userId},
+			#{content}
+		)
+	</insert>
+	
+	<update id="updateBoard" parameterType="board">
+		update tb_articleboard
+		   set title = #{title},
+			   content = #{content}
+		 where no = #{no}
+	</update>
+	
+	<delete id="deleteBoard" parameterType="int">
+		delete 
+		  from tb_articleboard
+		 where no = #{no}
+	</delete>
+	
+	<update id="updateBoardViewCnt" parameterType="int">
+		update tb_articleboard
+		   set view_cnt = view_cnt + 1
+		 where no = #{no}
+	</update>
+	
+		<!-- 페이징 관련 -->
+	
+	<select id="selectBoard" parameterType="page" resultMap="boardMap">
+    	select b.*, (select count(*) from tb_articleboard_cmt where no=b.no) as cmtCount
+    	  from ( 
+    	  		 select rownum rnum, a.*
+    	           from (select * from tb_articleboard order by no desc) a 
+    	       ) b
+    	 where rnum between #{begin} and #{end}
+    </select> 
+
+    <select id="selectBoardCount" parameterType="page" resultType="int">
+    	select count(*)
+          from tb_articleboard
+    </select> 
+	
+	<resultMap id="commentMap" type="comment">
+		<result column="comment_no" property="commentNo"/>
+		<result column="no" property="no"/>
+		<result column="user_id" property="userId"/>
+		<result column="content" property="content"/>
+		<result column="reg_date" property="regDate"/>
+	</resultMap>
+
+	<select id="selectCommentByNo" parameterType="int"  resultMap="commentMap">
+		select *
+		  from tb_articleboard_cmt
+		 where no = #{no}
+		 order by comment_no asc
+	</select>
+	
+	<insert id="insertComment" parameterType="comment">
+		insert into tb_articleboard_cmt(
+			comment_no, no, user_id, content
+		)values(
+			s_articleboard_no.nextval, #{no}, #{userId}, #{content}
+		)
+	</insert>
+	
+	<update id="updateComment" parameterType="comment">
+		update tb_articleboard_cmt
+		   set content = #{content}
+		 where comment_no = #{commentNo}
+		 
+	</update>
+	<delete id="deleteComment" parameterType="int">
+		delete
+		  from tb_articleboard_cmt
+		 where comment_no = #{commentNo}
+	</delete>
+	
+		<!-- 첨부파일 파트 시작 -->
+	
+	<resultMap id="boardFileMap" type="boardFile">
+		<result column="file_no" property="fileNo" />
+		<result column="no" property="no" />
+		<result column="file_path" property="filePath" />
+		<result column="ori_name" property="oriName" />
+		<result column="system_name" property="systemName" />
+		<result column="file_size" property="fileSize" />
+	</resultMap>
+	
+	<insert id="insertBoardFile" parameterType="boardFile">
+		insert into tb_articleboard_file (
+			file_no, no, file_path, ori_name, system_name, file_size
+		) values (
+			s_board_file_no.nextval, #{no}, #{filePath}, #{oriName}, #{systemName}, #{fileSize}		
+		)
+	</insert> 
+	
+	<select id="selectBoardFileByNo" parameterType="int" resultMap="boardFileMap">
+		select *
+		  from tb_articleboard_file
+		 where no = #{no} 
+	</select>
+	
+</mapper>
